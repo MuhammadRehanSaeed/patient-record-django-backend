@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,18 +22,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y0i7pm#c-8(2kt%@lqg5^1n+1xpojkc)_xvxg5^p%%7y%7s0-('
+# SECRET_KEY = 'django-insecure-y0i7pm#c-8(2kt%@lqg5^1n+1xpojkc)_xvxg5^p%%7y%7s0-('
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-y0i7pm#c-8(2kt%@lqg5^1n+1xpojkc)_xvxg5^p%%7y%7s0-("
+)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "10.0.2.2",
-    '192.168.18.81',
-    '.onrender.com'
-]
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "10.0.2.2",
+#     '192.168.18.81',
+#     '.onrender.com'
+# ]
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,10.0.2.2,192.168.18.81,.onrender.com"
+).split(",")
 
 
 # Application definition
