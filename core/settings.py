@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,8 +38,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "10.0.2.2",
-    '192.168.18.81',
-    '.onrender.com'
+    '192.168.18.81'
 ]
 # ALLOWED_HOSTS = os.environ.get(
 #     "ALLOWED_HOSTS",
@@ -69,7 +69,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -151,7 +150,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),   # typical mobile access
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),     # ~2 weeks
+    "ROTATE_REFRESH_TOKENS": True,                    # get new refresh on use
+    "BLACKLIST_AFTER_ROTATION": True,                 # old one becomes invalid
 }
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
