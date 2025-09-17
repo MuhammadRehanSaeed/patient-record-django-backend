@@ -6,9 +6,13 @@ from .models import Patient
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="A user with this username already exists.")]
+    )
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all(), message="A user with this email already exists.")]
     )
     password = serializers.CharField(write_only=True, required=True)
 

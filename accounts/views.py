@@ -246,3 +246,81 @@ class TestAuthView(APIView):
                 "content_type": request.META.get('CONTENT_TYPE', 'Not provided')
             }
         }, status=status.HTTP_200_OK)
+
+
+class PatientByMRNoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, mr_no):
+        """
+        Get a specific patient record by MR Number
+        """
+        try:
+            patient = get_object_or_404(Patient, mr_no=mr_no, created_by=request.user)
+            serializer = PatientSerializer(patient)
+            return Response({
+                "message": "Patient retrieved successfully",
+                "patient": serializer.data
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "message": "Patient not found",
+                "error": f"No patient found with MR Number: {mr_no}"
+            }, status=status.HTTP_404_NOT_FOUND)
+
+
+class PatientByDateRangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Get patients created within a date range
+        Query parameters: start_date and end_date (format: YYYY-MM-DD)
+        """
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        if not start_date or not end_date:
+            return Response({
+                "message": "Both start_date and end_date are required",
+                "error": "Please provide start_date and end_date in YYYY-MM-DD format"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            from datetime import datetime
+            # Parse the date strings
+            start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+            end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
+            
+            # Add time to end_date to include the entire day
+            from datetime import timedelta
+            end_datetime = end_datetime + timedelta(days=1)
+            
+            # Filter patients by date range and user
+            patients = Patient.objects.filter(
+                created_by=request.user,
+                created_at__gte=start_datetime,
+                created_at__lt=end_datetime
+            ).order_by('-created_at')
+            
+            serializer = PatientSerializer(patients, many=True)
+            return Response({
+                "message": f"Patients found from {start_date} to {end_date}",
+                "patients": serializer.data,
+                "count": patients.count(),
+                "date_range": {
+                    "start_date": start_date,
+                    "end_date": end_date
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except ValueError:
+            return Response({
+                "message": "Invalid date format",
+                "error": "Please use YYYY-MM-DD format for dates (e.g., 2024-08-01)"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                "message": "Error retrieving patients",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

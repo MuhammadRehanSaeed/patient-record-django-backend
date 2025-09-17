@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     LogoutView, RegisterView, LoginView,
-    PatientCreateView, PatientListView, PatientDetailView, PatientSearchView, TestAuthView
+    PatientCreateView, PatientListView, PatientDetailView, PatientSearchView, TestAuthView, PatientByMRNoView, PatientByDateRangeView
 )
 
 urlpatterns = [
@@ -15,6 +15,8 @@ urlpatterns = [
     path('patients/list/', PatientListView.as_view(), name="patient-list"),
     path('patients/<int:patient_id>/', PatientDetailView.as_view(), name="patient-detail"),
     path('patients/search/', PatientSearchView.as_view(), name="patient-search"),
+    path('patients/mr/<str:mr_no>/', PatientByMRNoView.as_view(), name="patient-by-mr"),
+    path('patients/date-range/', PatientByDateRangeView.as_view(), name="patient-by-date-range"),
     
     # Test URL
     path('test-auth/', TestAuthView.as_view(), name="test-auth"),

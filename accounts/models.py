@@ -5,46 +5,48 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Patient(models.Model):
-    # Basic Information
+    # Required Basic Information
     patient_name = models.CharField(max_length=255)
     mr_no = models.CharField(max_length=100, unique=True)  # Medical Record Number
     age = models.CharField(max_length=10)
     weight = models.CharField(max_length=20)
     height = models.CharField(max_length=20)
     gender = models.CharField(max_length=10)
-    city = models.CharField(max_length=100)
-    phone_no = models.CharField(max_length=20)
     
-    # Dates
-    admission_date = models.CharField(max_length=50)
-    operation_date = models.CharField(max_length=50)
-    discharge_date = models.CharField(max_length=50)
+    # Optional Basic Information
+    city = models.CharField(max_length=100, blank=True, default='')
+    phone_no = models.CharField(max_length=20, blank=True, default='')
     
-    # Medical Information
-    comorbid = models.TextField()  # Comorbidities
-    presenting_complain = models.TextField()
-    examination = models.TextField()
-    hand_written_diagnosis = models.TextField()
-    classification = models.CharField(max_length=100)
-    value = models.CharField(max_length=100)
+    # Optional Dates
+    admission_date = models.CharField(max_length=50, blank=True, default='')
+    operation_date = models.CharField(max_length=50, blank=True, default='')
+    discharge_date = models.CharField(max_length=50, blank=True, default='')
     
-    # Surgical Information
-    procedure = models.TextField()
-    operative = models.CharField(max_length=100)
-    surgeon_name = models.CharField(max_length=255)
-    pre_op_neurology = models.TextField()
-    surgery = models.CharField(max_length=100)
-    side = models.CharField(max_length=50)
-    spine_level = models.CharField(max_length=100)
+    # Optional Medical Information
+    comorbid = models.TextField(blank=True, default='')  # Comorbidities
+    presenting_complain = models.TextField(blank=True, default='')
+    examination = models.TextField(blank=True, default='')
+    hand_written_diagnosis = models.TextField(blank=True, default='')
+    classification = models.CharField(max_length=100, blank=True, default='')
+    value = models.CharField(max_length=100, blank=True, default='')
     
-    # MRI and Imaging
-    mri_findings = models.TextField()
-    instrumentation = models.TextField()
-    mri = models.CharField(max_length=100)
+    # Optional Surgical Information
+    procedure = models.TextField(blank=True, default='')
+    operative = models.CharField(max_length=100, blank=True, default='')
+    surgeon_name = models.CharField(max_length=255, blank=True, default='')
+    pre_op_neurology = models.TextField(blank=True, default='')
+    surgery = models.CharField(max_length=100, blank=True, default='')
+    side = models.CharField(max_length=50, blank=True, default='')
+    spine_level = models.CharField(max_length=100, blank=True, default='')
     
-    # Post-operative
-    after_complication = models.TextField()
-    re_do_surgery = models.CharField(max_length=100)
+    # Optional MRI and Imaging
+    mri_findings = models.TextField(blank=True, default='')
+    instrumentation = models.TextField(blank=True, default='')
+    mri = models.CharField(max_length=100, blank=True, default='')
+    
+    # Optional Post-operative
+    after_complication = models.TextField(blank=True, default='')
+    re_do_surgery = models.CharField(max_length=100, blank=True, default='')
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
